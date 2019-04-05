@@ -37,10 +37,18 @@ You should not put any user code in this function besides modifying the variable
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     ansible
      auto-completion
      better-defaults
+     chrome
      colors
+     csharp
+     docker
+     emoji
+     fsharp
+     games
      git
+     github
      go
      haskell
      helm
@@ -52,13 +60,21 @@ You should not put any user code in this function besides modifying the variable
      pdf-tools
      puppet
      python
+     ranger
+     react
      ruby
      ruby-on-rails
      shell
+     shell-scripts
      spell-checking
+     sql
      syntax-checking
+     systemd
+     terraform
      theming
+     vagrant
      version-control
+     xkcd
      yaml
      ;; Use colorize for variables only
      (colors :variables colors-colorize-identifiers 'variables)
@@ -90,10 +106,10 @@ You should not put any user code in this function besides modifying the variable
      beacon
      dumb-jump
      flycheck-gometalinter
-     git-messenger
      go-playground
      gotest
      highlight-indent-guides
+     magit-popup
      rainbow-delimiters
      )
    ;; A list of packages that cannot be updated.
@@ -299,7 +315,7 @@ values."
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
    ;; (default nil)
-   dotspacemacs-line-numbers '(:relative t
+   dotspacemacs-line-numbers '(:relative nil
                                          :disabled-for-modes dired-mode
                                          pdf-view-mode
                                          :size-limit-kb 2000)
@@ -334,21 +350,15 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup 'trailing
+   ;; js2-mode
+   js2-basic-offset 3
+   ;; web-mode
+   css-indent-offset 3
+   web-mode-markup-indent-offset 3
+   web-mode-css-indent-offset 3
+   web-mode-code-indent-offset 3
+   web-mode-attr-indent-offset 3
    ))
-
-(defun dotspacemacs/user-init ()
-  "Initialization function for user code.
-It is called immediately after `dotspacemacs/init', before layer configuration
-executes.
- This function is mostly useful for variables that need to be set
-before packages are loaded. If you are unsure, you should try in setting them
-in `dotspacemacs/user-config' first."
-  ;; Force golang-mode to respect 3 spaces for tab width
-  (add-hook 'go-mode-hook
-            (lambda ()
-              (setq indent-tabs-mode 1)
-              (setq tab-width 3)))
-  )
 
 (defun dotspacemacs/user-init ()
   "Initialization function for user code.
@@ -427,6 +437,16 @@ you should place your code here."
   (spacemacs/toggle-truncate-lines-on)
   (add-hook 'prog-mode-hook 'spacemacs/toggle-truncate-lines-on)
   (add-hook 'text-mode-hook 'spacemacs/toggle-visual-line-navigation-on)
+
+  ;; Use Spacemacs to edit git commits messages.
+  (global-git-commit-mode t)
+
+  ;; 3 space indent for element’s attributes, concatenations and contiguous
+  ;; function calls
+  (with-eval-after-load 'web-mode
+    (add-to-list 'web-mode-indentation-params '("lineup-args" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-concats" . nil))
+    (add-to-list 'web-mode-indentation-params '("lineup-calls" . nil)))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -454,7 +474,7 @@ you should place your code here."
  '(linum-format " %d")
  '(package-selected-packages
    (quote
-    (spaceline-all-the-icons highlight-indent-guides transient turing-theme yasnippet-snippets company-quickhelp yapfify yaml-mode xterm-color web-mode web-beautify vmd-mode unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rainbow-mode rainbow-identifiers pyvenv pytest pyenv-mode py-isort puppet-mode pug-mode projectile-rails rake inflections pip-requirements pdf-tools tablist origami orgit nginx-mode mwim multi-term mmm-mode minitest markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd live-py-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero hy-mode hlint-refactor hindent helm-pydoc helm-hoogle helm-gitignore helm-css-scss helm-company helm-c-yasnippet haskell-snippets haml-mode go-playground gotest go-guru go-eldoc gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-popup flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck-gometalinter flycheck feature-mode evil-magit magit magit-popup git-commit ghub treepy graphql with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-go go-mode company-ghci company-ghc ghc haskell-mode company-cabal company-auctex company-anaconda company color-identifiers-mode coffee-mode cmm-mode chruby bundler inf-ruby beacon auto-yasnippet yasnippet auto-dictionary auctex anaconda-mode pythonic all-the-icons memoize ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
+    (vagrant-tramp vagrant terraform-mode hcl-mode systemd ranger jinja2-mode gmail-message-mode ham-mode html-to-markdown flymd edit-server dockerfile-mode docker docker-tramp company-ansible ansible-doc ansible xkcd typit mmt sudoku sql-indent pacmacs magit-gh-pulls insert-shebang github-search github-clone github-browse-file gist gh marshal logito pcache ht fsharp-mode fish-mode emoji-cheat-sheet-plus company-shell company-emoji 2048-game omnisharp csharp-mode lv spaceline-all-the-icons highlight-indent-guides transient turing-theme yasnippet-snippets company-quickhelp yapfify yaml-mode xterm-color web-mode web-beautify vmd-mode unfill tagedit smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rainbow-mode rainbow-identifiers pyvenv pytest pyenv-mode py-isort puppet-mode pug-mode projectile-rails rake inflections pip-requirements pdf-tools tablist origami orgit nginx-mode mwim multi-term mmm-mode minitest markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd live-py-mode json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero hy-mode hlint-refactor hindent helm-pydoc helm-hoogle helm-gitignore helm-css-scss helm-company helm-c-yasnippet haskell-snippets haml-mode go-playground gotest go-guru go-eldoc gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-popup flyspell-correct-helm flyspell-correct flycheck-pos-tip pos-tip flycheck-haskell flycheck-gometalinter flycheck feature-mode evil-magit magit magit-popup git-commit ghub treepy graphql with-editor eshell-z eshell-prompt-extras esh-help emmet-mode diff-hl cython-mode company-web web-completion-data company-tern dash-functional tern company-statistics company-go go-mode company-ghci company-ghc ghc haskell-mode company-cabal company-auctex company-anaconda company color-identifiers-mode coffee-mode cmm-mode chruby bundler inf-ruby beacon auto-yasnippet yasnippet auto-dictionary auctex anaconda-mode pythonic all-the-icons memoize ac-ispell auto-complete ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
